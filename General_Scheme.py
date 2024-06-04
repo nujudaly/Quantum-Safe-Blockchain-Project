@@ -29,8 +29,8 @@ class LWE_Scheme:
         A = np.random.randint(0, self.q, size=(self.m, self.n))
         self.check_linear_independence(A)
 
-        S = np.random.randint(0, self.q ** 0.05, size=self.n)
-        E = np.random.randint(0, self.q ** 0.05, size=self.m)
+        S = np.random.randint(0, self.q ** 0.5, size=self.n)
+        E = np.random.randint(0, self.q ** 0.5, size=self.m)
 
         self.check_small_norm(S, threshold=self.q)
         self.check_small_norm(E, threshold=self.q)
@@ -40,8 +40,8 @@ class LWE_Scheme:
         return (A, T), (S, E)
 
     def sign(self, A, S, E, message):
-        y1 = np.random.randint(0, self.q ** 0.05, size=self.n)
-        y2 = np.random.randint(0, self.q ** 0.05, size=self.m)
+        y1 = np.random.randint(0, self.q ** 0.5, size=self.n)
+        y2 = np.random.randint(0, self.q ** 0.5, size=self.m)
 
         self.check_small_norm(y1, threshold=self.q)
         self.check_small_norm(y2, threshold=self.q)
