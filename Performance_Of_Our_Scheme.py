@@ -4,6 +4,7 @@ import time
 from tabulate import tabulate
 import matplotlib.pyplot as plt
 
+
 class LWE_Scheme:
     def __init__(self, n, m, q, mu=123):
         self.n = n
@@ -31,19 +32,20 @@ class LWE_Scheme:
         A = np.random.randint(0, self.q, size=(self.m, self.n))
         self.check_linear_independence(A)
 
-        S = np.random.randint(0, self.q ** 0.05, size=self.n)
-        E = np.random.randint(0, self.q ** 0.05, size=self.m)
+        S = np.random.randint(0, self.q ** 0.5, size=self.n)
+        E = np.random.randint(0, self.q ** 0.5, size=self.m)
 
         self.check_small_norm(S, threshold=self.q)
         self.check_small_norm(E, threshold=self.q)
 
         T = (A @ S + E) % self.q
+        print(f"T:{T[0]}")
 
         return (A, T), (S, E)
 
     def sign(self, A, S, E, message):
-        y1 = np.random.randint(0, self.q ** 0.05, size=self.n)
-        y2 = np.random.randint(0, self.q ** 0.05, size=self.m)
+        y1 = np.random.randint(0, self.q ** 0.5, size=self.n)
+        y2 = np.random.randint(0, self.q ** 0.5, size=self.m)
 
         self.check_small_norm(y1, threshold=self.q)
         self.check_small_norm(y2, threshold=self.q)
@@ -52,7 +54,7 @@ class LWE_Scheme:
         c = self.hash_message(message.encode('utf-8') + v.tobytes())
         z1 = (y1 + S * c) % self.q
         z2 = (y2 + E * c) % self.q
-
+        print(f"z1:{z1}")
         return (z1, z2, c), (y1, y2, v)
 
     def verify(self, A, T, signature, message):
@@ -61,13 +63,14 @@ class LWE_Scheme:
         c_prime = self.hash_message(message.encode('utf-8') + v_prime.tobytes())
         return c == c_prime
 
+
 # Generating table data and printing key sizes
 table_data = []
 times = []
 
 for n in range(1000, 10001, 1000):
     q = 8383489  # A parameter set is proposed for scheme with 256 bits of security
-    scheme = LWE_Scheme(n, n + 1, q)
+    scheme = LWE_Scheme(n, n, q)
     public_key, secret_keys = scheme.keygen()
     message = '123'
     # Perform the sign and verify multiple times for averaging
